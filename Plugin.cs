@@ -3,11 +3,12 @@ using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 using System.IO;
+using TootTallyCore.Utils.Assets;
 using TootTallyCore.Utils.TootTallyModules;
 using TootTallySettings;
 using UnityEngine;
 
-namespace TootTally.ModuleTemplate
+namespace TootTallyAccounts
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     [BepInDependency("TootTallyCore", BepInDependency.DependencyFlags.HardDependency)]
@@ -16,8 +17,10 @@ namespace TootTally.ModuleTemplate
     {
         public static Plugin Instance;
 
-        private const string CONFIG_NAME = "ModuleTemplate.cfg";
-        public Options option;
+        private const string CONFIG_NAME = "TootTally.cfg";
+        public const string DEFAULT_APIKEY = "SignUpOnTootTally.com";
+        internal static string GetAPIKey => Instance.option.APIKey.Value;
+        internal Options option;
         private Harmony _harmony;
         public ConfigEntry<bool> ModuleConfigEnabled { get; set; }
         public bool IsConfigInitialized { get; set; }
@@ -43,7 +46,6 @@ namespace TootTally.ModuleTemplate
         {
             // Bind to the TTModules Config for TootTally
             ModuleConfigEnabled = TootTallyCore.Plugin.Instance.Config.Bind("Modules", "<insert module name here>", true, "<insert module description here>");
-            TootTallySettings.Plugin.Instance.AddModuleToSettingPage(this);
             TootTallyModuleManager.AddModule(this);
         }
 
@@ -53,19 +55,17 @@ namespace TootTally.ModuleTemplate
             ConfigFile config = new ConfigFile(configPath + CONFIG_NAME, true);
             option = new Options()
             {
-                // Set your config here by binding them to the related ConfigEntry in your Options class
-                // Example:
-                // Unlimited = config.Bind(CONFIG_FIELD, "Unlimited", DEFAULT_UNLISETTING)
+                APIKey = Config.Bind("API Setup", "API Key", DEFAULT_APIKEY, "API Key for Score Submissions."),
+                ShowLoginPanel = Config.Bind("API Setup", "Show Login Panel", true, "Show login panel when not logged in.")
             };
+            TootTallySettings.Plugin.MainTootTallySettingPage.AddButton("OpenLoginPage", new Vector2(400, 60), "Open Login Page", TootTallyUser.OpenLoginPanel);
+            TootTallySettings.Plugin.MainTootTallySettingPage.AddToggle("Show Login Panel", option.ShowLoginPanel);
 
-            settingPage = TootTallySettingsManager.AddNewPage("ModulePageName", "HeaderText", 40f, new Color(0,0,0,0));
-            if (settingPage != null) {
-                // Use TootTallySettingPage functions to add your objects to TootTallySetting
-                // Example:
-                // page.AddToggle(name, option.Unlimited);
-            }
-
-            _harmony.PatchAll(typeof(ModuleTemplatePatches));
+            var assetsPath = Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Assets");
+            AssetManager.LoadAssets(assetsPath);
+            AssetBundleManager.LoadAssets(Path.Combine(assetsPath, "loginassets"));
+            _harmony.PatchAll(typeof(TootTallyUser));
+            _harmony.PatchAll(typeof(UserStatusUpdater));
             LogInfo($"Module loaded!");
         }
 
@@ -76,16 +76,10 @@ namespace TootTally.ModuleTemplate
             LogInfo($"Module unloaded!");
         }
 
-        public static class ModuleTemplatePatches
-        {
-            // Apply your Trombone Champ patches here
-        }
-
         public class Options
         {
-            // Fill this class up with ConfigEntry objects that define your configs
-            // Example:
-            // public ConfigEntry<bool> Unlimited { get; set; }
+            public ConfigEntry<string> APIKey { get; set; }
+            public ConfigEntry<bool> ShowLoginPanel { get; set; }
         }
     }
 }
