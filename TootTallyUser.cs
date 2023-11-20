@@ -12,6 +12,7 @@ namespace TootTallyAccounts
         public static SerializableClass.User userInfo = new SerializableClass.User() { allowSubmit = false, id = 0, username = "Guest" };
         private static List<SerializableClass.Message> _messagesReceived;
         private static TootTallyLoginPanel _loginPanel;
+        private static bool _hasGreetedUser;
 
         [HarmonyPatch(typeof(HomeController), nameof(HomeController.Start))]
         [HarmonyPostfix]
@@ -40,6 +41,12 @@ namespace TootTallyAccounts
         public static void DisplayReceivedMessaged()
         {
             if (userInfo.id == 0) return; //Do not receive massages if not logged in
+
+            if (!_hasGreetedUser)
+            {
+                TootTallyNotifManager.DisplayNotif($"Welcome, {userInfo.username}!", Color.white, 9f);
+                _hasGreetedUser = true;
+            }
 
             Plugin.Instance.StartCoroutine(TootTallyAPIService.GetMessageFromAPIKey(Plugin.GetAPIKey, messages =>
             {

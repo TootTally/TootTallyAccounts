@@ -19,7 +19,7 @@ namespace TootTallyAccounts
 
         private const string CONFIG_NAME = "TootTally.cfg";
         public const string DEFAULT_APIKEY = "SignUpOnTootTally.com";
-        internal static string GetAPIKey => Instance.option.APIKey.Value;
+        public static string GetAPIKey => Instance.option.APIKey.Value;
         internal Options option;
         private Harmony _harmony;
         public ConfigEntry<bool> ModuleConfigEnabled { get; set; }
