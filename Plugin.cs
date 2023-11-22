@@ -66,6 +66,7 @@ namespace TootTallyAccounts
             AssetBundleManager.LoadAssets(Path.Combine(assetsPath, "loginassets"));
             _harmony.PatchAll(typeof(TootTallyUser));
             _harmony.PatchAll(typeof(UserStatusUpdater));
+            gameObject.AddComponent<UserStatusManager>();
             LogInfo($"Module loaded!");
         }
 
