@@ -144,10 +144,10 @@ namespace TootTallyAccounts
 
                 Plugin.Instance.StartCoroutine(TootTallyAPIService.GetUserFromToken(token.token, (user) =>
                 {
+                    ReturnPage("TootTally Login");
                     if (user == null)
                     {
                         TootTallyNotifManager.DisplayNotif("Couldn't get user info... Please contact TootTally's moderator on discord.", Color.red);
-                        ReturnPage("TootTally Login");
                         return;
                     }
                     TootTallyNotifManager.DisplayNotif($"Login with {user.username} successful!", Color.white);
