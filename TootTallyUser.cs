@@ -19,25 +19,20 @@ namespace TootTallyAccounts
         public static void InitializeUser()
         {
             _messagesReceived ??= new List<SerializableClass.Message>();
-            if ((Plugin.GetAPIKey == Plugin.GetAPIKey || Plugin.GetAPIKey == "") && Plugin.Instance.option.ShowLoginPanel.Value)
+            if (Plugin.GetAPIKey == Plugin.DEFAULT_APIKEY || Plugin.GetAPIKey == "")
             {
                 if (Plugin.Instance.option.ShowLoginPanel.Value)
                     OpenLoginPanel();
             }
-            else if (userInfo.id == 0 && Plugin.GetAPIKey != Plugin.DEFAULT_APIKEY)
+            else if (userInfo.id == 0)
             {
                 Plugin.Instance.StartCoroutine(TootTallyAPIService.GetUserFromAPIKey(Plugin.GetAPIKey, user =>
                 {
-                    OnUserLogin(user);
                     if (user.id == 0 && Plugin.Instance.option.ShowLoginPanel.Value)
                         OpenLoginPanel();
+                    else
+                        OnUserLogin(user);
                 }));
-
-                /*Plugin.Instance.StartCoroutine(ThunderstoreAPIService.GetMostRecentModVersion(version =>
-                {
-                    if (version.CompareTo(PluginInfo.PLUGIN_VERSION) > 0)
-                        TootTallyNotifManager.DisplayNotif("New update available!\nNow available on Thunderstore", Color.yellow, 8.5f);
-                }));*/
             }
         }
 
