@@ -29,11 +29,11 @@
 		<Reference Include="TootTallyCore">
 			<HintPath>$(TromboneTootDir)\BepInEx\plugins\TootTally-Core\TootTallyCore.dll</HintPath>
 		</Reference>
-	</ItemGroup>
-
-	<ItemGroup>
 		<Reference Include="TootTallySettings">
 			<HintPath>$(TromboneTootDir)\BepInEx\plugins\TootTally-Settings\TootTallySettings.dll</HintPath>
+		</Reference>
+		<Reference Include="TootTallyDiscordSDK">
+			<HintPath>$(TromboneTootDir)\BepInEx\plugins\TootTally-DiscordSDK\TootTallyDiscordSDK.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 

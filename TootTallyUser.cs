@@ -1,9 +1,11 @@
-﻿using BepInEx.Bootstrap;
+﻿using BaboonAPI.Hooks.Entrypoints;
+using BepInEx.Bootstrap;
 using HarmonyLib;
 using System.Collections.Generic;
 using TootTallyCore.APIServices;
 using TootTallyCore.Utils.TootTallyNotifs;
 using UnityEngine;
+using static TootTallyDiscordSDK.DiscordRichPresence.DiscordRPCManager;
 
 namespace TootTallyAccounts
 {
@@ -78,6 +80,16 @@ namespace TootTallyAccounts
                     userInfo.allowSubmit = allowSubmit;
                 }));
                 UserStatusManager.SetUserStatus(UserStatusManager.UserStatus.Online);
+            }
+        }
+
+        [BaboonEntryPoint]
+        public class DiscordRichPresenceEntryPoint : DiscordEntryPoints
+        {
+            override public void OnLevelSelectStart()
+            {
+                if (userInfo != null)
+                    SetAccount(userInfo.username, userInfo.rank);
             }
         }
 
