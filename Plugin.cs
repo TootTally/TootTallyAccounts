@@ -19,8 +19,7 @@ namespace TootTallyAccounts
 
         private const string CONFIG_NAME = "TootTally.cfg";
         public const string DEFAULT_APIKEY = "SignUpOnTootTally.com";
-        public static string GetAPIKey => Instance.option.APIKey.Value;
-        internal Options option;
+        public static string GetAPIKey => Instance.APIKey.Value;
         private Harmony _harmony;
         public ConfigEntry<bool> ModuleConfigEnabled { get; set; }
         public bool IsConfigInitialized { get; set; }
@@ -53,13 +52,10 @@ namespace TootTallyAccounts
         {
             string configPath = Path.Combine(Paths.BepInExRootPath, "config/");
             ConfigFile config = new ConfigFile(configPath + CONFIG_NAME, true);
-            option = new Options()
-            {
-                APIKey = Config.Bind("API Setup", "API Key", DEFAULT_APIKEY, "API Key for Score Submissions."),
-                ShowLoginPanel = Config.Bind("API Setup", "Show Login Panel", true, "Show login panel when not logged in.")
-            };
+            APIKey = Config.Bind("API Setup", "API Key", DEFAULT_APIKEY, "API Key for Score Submissions.");
+            ShowLoginPanel = Config.Bind("API Setup", "Show Login Panel", true, "Show login panel when not logged in.");
             TootTallySettings.Plugin.MainTootTallySettingPage.AddButton("OpenLoginPage", new Vector2(400, 60), "Open Login Page", TootTallyUser.OpenLoginPanel);
-            TootTallySettings.Plugin.MainTootTallySettingPage.AddToggle("Show Login Panel", option.ShowLoginPanel);
+            TootTallySettings.Plugin.MainTootTallySettingPage.AddToggle("Show Login Panel", ShowLoginPanel);
 
             var assetsPath = Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Assets");
             AssetManager.LoadAssets(assetsPath);
@@ -77,10 +73,7 @@ namespace TootTallyAccounts
             LogInfo($"Module unloaded!");
         }
 
-        public class Options
-        {
-            public ConfigEntry<string> APIKey { get; set; }
-            public ConfigEntry<bool> ShowLoginPanel { get; set; }
-        }
+        public ConfigEntry<string> APIKey { get; set; }
+        public ConfigEntry<bool> ShowLoginPanel { get; set; }
     }
 }

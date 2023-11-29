@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using TootTallyCore.APIServices;
 using TootTallyCore.Utils.TootTallyNotifs;
 using UnityEngine;
-using static TootTallyDiscordSDK.DiscordRichPresence.DiscordRPCManager;
 
 namespace TootTallyAccounts
 {
@@ -23,14 +22,14 @@ namespace TootTallyAccounts
             _messagesReceived ??= new List<SerializableClass.Message>();
             if (Plugin.GetAPIKey == Plugin.DEFAULT_APIKEY || Plugin.GetAPIKey == "")
             {
-                if (Plugin.Instance.option.ShowLoginPanel.Value)
+                if (Plugin.Instance.ShowLoginPanel.Value)
                     OpenLoginPanel();
             }
             else if (userInfo.id == 0)
             {
                 Plugin.Instance.StartCoroutine(TootTallyAPIService.GetUserFromAPIKey(Plugin.GetAPIKey, user =>
                 {
-                    if (user.id == 0 && Plugin.Instance.option.ShowLoginPanel.Value)
+                    if (user.id == 0 && Plugin.Instance.ShowLoginPanel.Value)
                         OpenLoginPanel();
                     else
                         OnUserLogin(user);
@@ -68,28 +67,18 @@ namespace TootTallyAccounts
         {
             userInfo = user;
             if (userInfo.api_key != null && userInfo.api_key != "")
-                Plugin.Instance.option.APIKey.Value = userInfo.api_key;
+                Plugin.Instance.APIKey.Value = userInfo.api_key;
             if (userInfo.id == 0)
             {
                 userInfo.allowSubmit = false;
             }
             else
             {
-                Plugin.Instance.StartCoroutine(TootTallyAPIService.SendModInfo(Plugin.Instance.option.APIKey.Value, Chainloader.PluginInfos, allowSubmit =>
+                Plugin.Instance.StartCoroutine(TootTallyAPIService.SendModInfo(Plugin.Instance.APIKey.Value, Chainloader.PluginInfos, allowSubmit =>
                 {
                     userInfo.allowSubmit = allowSubmit;
                 }));
                 UserStatusManager.SetUserStatus(UserStatusManager.UserStatus.Online);
-            }
-        }
-
-        [BaboonEntryPoint]
-        public class DiscordRichPresenceEntryPoint : DiscordEntryPoints
-        {
-            override public void OnLevelSelectStart()
-            {
-                if (userInfo != null)
-                    SetAccount(userInfo.username, userInfo.rank);
             }
         }
 

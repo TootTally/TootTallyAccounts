@@ -204,7 +204,7 @@ namespace TootTallyAccounts
                                 {
                                     TootTallyNotifManager.DisplayNotif($"Login with {user.username} successful!", Color.white);
                                     TootTallyUser.OnUserLogin(user);
-                                    Plugin.Instance.option.APIKey.Value = user.api_key;
+                                    Plugin.Instance.APIKey.Value = user.api_key;
                                     Hide();
                                 }
                                 else
@@ -241,7 +241,7 @@ namespace TootTallyAccounts
         private void OnDontShowAgainClick()
         {
             Hide();
-            Plugin.Instance.option.ShowLoginPanel.Value = false;
+            Plugin.Instance.ShowLoginPanel.Value = false;
         }
 
         private void OnLogoButtonClick(LogoNames logoName)
