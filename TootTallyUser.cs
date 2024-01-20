@@ -45,7 +45,7 @@ namespace TootTallyAccounts
 
             if (!_hasGreetedUser)
             {
-                TootTallyNotifManager.DisplayNotif($"Welcome, {userInfo.username}!", Color.white, 9f);
+                TootTallyNotifManager.DisplayNotif($"Welcome, {userInfo.username}!", 9f);
                 _hasGreetedUser = true;
             }
 
@@ -57,7 +57,7 @@ namespace TootTallyAccounts
                     if (_messagesReceived.FindAll(m => m.sent_on == message.sent_on).Count == 0)
                     {
                         _messagesReceived.Add(message);
-                        TootTallyNotifManager.DisplayNotif($"<size=14>From:{message.author} ({message.sent_on})</size>\n{message.message}", Color.white, 16f);
+                        TootTallyNotifManager.DisplayNotif($"<size=14>From:{message.author} ({message.sent_on})</size>\n{message.message}", 16f);
                     }
                 }
             }));

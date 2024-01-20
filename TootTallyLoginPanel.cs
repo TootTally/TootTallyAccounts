@@ -132,12 +132,12 @@ namespace TootTallyAccounts
         private void OnSubmitLogin()
         {
             ChangePage(_loadingMain);
-            TootTallyNotifManager.DisplayNotif("Sending login info... Please wait.", Color.white);
+            TootTallyNotifManager.DisplayNotif("Sending login info... Please wait.");
             Plugin.Instance.StartCoroutine(TootTallyAPIService.GetLoginToken(_loginUsername.text, _loginPassword.text, (token) =>
             {
                 if (token.token == "")
                 {
-                    TootTallyNotifManager.DisplayNotif("Username or password wrong... Try logging in again.", Color.red);
+                    TootTallyNotifManager.DisplayError("Username or password wrong... Try logging in again.");
                     ReturnPage("TootTally Login");
                     return;
                 }
@@ -147,10 +147,10 @@ namespace TootTallyAccounts
                     ReturnPage("TootTally Login");
                     if (user == null)
                     {
-                        TootTallyNotifManager.DisplayNotif("Couldn't get user info... Please contact TootTally's moderator on discord.", Color.red);
+                        TootTallyNotifManager.DisplayError("Couldn't get user info... Please contact TootTally's moderator on discord.");
                         return;
                     }
-                    TootTallyNotifManager.DisplayNotif($"Login with {user.username} successful!", Color.white);
+                    TootTallyNotifManager.DisplayNotif($"Login with {user.username} successful!");
                     TootTallyUser.OnUserLogin(user);
                     Hide();
                 }));
@@ -168,15 +168,15 @@ namespace TootTallyAccounts
         {
             if (!IsValidUsername(_signUpUsername.text))
             {
-                TootTallyNotifManager.DisplayNotif("Please enter a valid Username.", Color.white);
+                TootTallyNotifManager.DisplayNotif("Please enter a valid Username.");
                 return;
             }
             if (!IsValidPassword(_signUpPassword.text))
             {
                 if (_signUpPassword.text.Length <= 5)
-                    TootTallyNotifManager.DisplayNotif("Password has to be at least 5 characters long.", Color.white);
+                    TootTallyNotifManager.DisplayNotif("Password has to be at least 5 characters long.");
                 else
-                    TootTallyNotifManager.DisplayNotif("Please enter a valid Password.", Color.white);
+                    TootTallyNotifManager.DisplayNotif("Please enter a valid Password.");
                 return;
             }
 
@@ -184,16 +184,16 @@ namespace TootTallyAccounts
             {
                 _signUpPassword.text = "";
                 _signUpConfirm.text = "";
-                TootTallyNotifManager.DisplayNotif($"Passwords did not match! Type your password again.", Color.red);
+                TootTallyNotifManager.DisplayError($"Passwords did not match! Type your password again.");
                 return; //skip requests
             }
-            TootTallyNotifManager.DisplayNotif($"Sending sign up request... Please wait.", Color.white);
+            TootTallyNotifManager.DisplayNotif($"Sending sign up request... Please wait.");
             ChangePage(_loadingMain);
             Plugin.Instance.StartCoroutine(TootTallyAPIService.SignUpRequest(_signUpUsername.text, _signUpPassword.text, _signUpConfirm.text, isValid =>
             {
                 if (isValid)
                 {
-                    TootTallyNotifManager.DisplayNotif($"Getting new user info...", Color.white);
+                    TootTallyNotifManager.DisplayNotif($"Getting new user info...");
                     Plugin.Instance.StartCoroutine(TootTallyAPIService.GetLoginToken(_signUpUsername.text, _signUpPassword.text, token =>
                     {
                         if (token.token != "")
@@ -202,28 +202,28 @@ namespace TootTallyAccounts
                             {
                                 if (user != null)
                                 {
-                                    TootTallyNotifManager.DisplayNotif($"Login with {user.username} successful!", Color.white);
+                                    TootTallyNotifManager.DisplayNotif($"Login with {user.username} successful!");
                                     TootTallyUser.OnUserLogin(user);
                                     Plugin.Instance.APIKey.Value = user.api_key;
                                     Hide();
                                 }
                                 else
                                 {
-                                    TootTallyNotifManager.DisplayNotif($"Unexpected Error Occured...", Color.yellow);
+                                    TootTallyNotifManager.DisplayWarning($"Unexpected Error Occured...");
                                     ReturnPage("TootTally Sign-up");
                                 }
                             }));
                         }
                         else
                         {
-                            TootTallyNotifManager.DisplayNotif($"Unexpected Error Occured...", Color.yellow);
+                            TootTallyNotifManager.DisplayWarning($"Unexpected Error Occured...");
                             ReturnPage("TootTally Sign-up");
                         }
                     }));
                 }
                 else
                 {
-                    TootTallyNotifManager.DisplayNotif($"Username or password denied by server.", Color.yellow);
+                    TootTallyNotifManager.DisplayWarning($"Username or password denied by server.");
                     ReturnPage("TootTally Sign-up");
                 }
             }));
