@@ -25,7 +25,7 @@ namespace TootTallyAccounts
         {
             if (_currentStatus == UserStatus.NotConnected || !_isInitialized) return;
 
-            _timer -= Time.deltaTime;
+            _timer -= Time.unscaledDeltaTime;
             if (_isTimerReady && _timer < 0)
                 OnTimerEnd();
         }
