@@ -1,5 +1,5 @@
 # TootTally Account Module
-> Version: 1.0.2
+> Version: 1.0.3
 
 Account login/signup and management for [TootTallyCore](https://toottally.com/)
 
