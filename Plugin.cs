@@ -4,6 +4,7 @@ using BepInEx.Configuration;
 using HarmonyLib;
 using System.IO;
 using TootTallyCore.Utils.Assets;
+using TootTallyCore.Utils.Helpers;
 using TootTallyCore.Utils.TootTallyModules;
 using TootTallySettings;
 using UnityEngine;
@@ -18,8 +19,9 @@ namespace TootTallyAccounts
         public static Plugin Instance;
 
         private const string CONFIG_NAME = "TootTally.cfg";
+        public const string API_KEY_CONFIG_NAME = "TootTallyAPIKey.cfg";
         public const string DEFAULT_APIKEY = "SignUpOnTootTally.com";
-        public static string GetAPIKey => Instance.APIKey.Value;
+        public static string GetAPIKey => Instance.PersistentAPIKey;
         private Harmony _harmony;
         public ConfigEntry<bool> ModuleConfigEnabled { get; set; }
         public bool IsConfigInitialized { get; set; }
@@ -52,7 +54,10 @@ namespace TootTallyAccounts
         {
             string configPath = Path.Combine(Paths.BepInExRootPath, "config/");
             ConfigFile config = new ConfigFile(configPath + CONFIG_NAME, true);
-            APIKey = Config.Bind("API Setup", "API Key", DEFAULT_APIKEY, "API Key for Score Submissions.");
+            APIKey = Config.Bind("API Setup", "API Key", DEFAULT_APIKEY, "DEPRECIATED, DO NOT USE THIS CONFIG.");
+            if (APIKey.Value != DEFAULT_APIKEY)
+                MigrateAPIKeyToPersistentTootTallyFile();
+            PersistentAPIKey = FileHelper.LoadFromTootTallyAppData<string>(API_KEY_CONFIG_NAME);
             ShowLoginPanel = Config.Bind("API Setup", "Show Login Panel", true, "Show login panel when not logged in.");
             TootTallySettings.Plugin.MainTootTallySettingPage.AddButton("OpenLoginPage", new Vector2(400, 60), "Open Login Page", TootTallyUser.OpenLoginPanel);
             TootTallySettings.Plugin.MainTootTallySettingPage.AddToggle("Show Login Panel", ShowLoginPanel);
@@ -66,10 +71,27 @@ namespace TootTallyAccounts
             LogInfo($"Module loaded!");
         }
 
+        public void MigrateAPIKeyToPersistentTootTallyFile()
+        {
+            PersistentAPIKey = APIKey.Value;
+            FileHelper.SaveToTootTallyAppData(API_KEY_CONFIG_NAME, PersistentAPIKey);
+            APIKey.Value = DEFAULT_APIKEY;
+            Plugin.LogInfo("Migrated API KEY to persistent toottally files.");
+        }
+
         public void UnloadModule()
         {
             _harmony.UnpatchSelf();
             LogInfo($"Module unloaded!");
+        }
+
+        public string PersistentAPIKey { get; private set; }
+
+        public void SetAPIKey(string APIKey)
+        {
+            PersistentAPIKey = APIKey;
+            FileHelper.SaveToTootTallyAppData(API_KEY_CONFIG_NAME, PersistentAPIKey);
+
         }
 
         public ConfigEntry<string> APIKey { get; set; }

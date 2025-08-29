@@ -67,14 +67,14 @@ namespace TootTallyAccounts
         {
             userInfo = user;
             if (userInfo.api_key != null && userInfo.api_key != "")
-                Plugin.Instance.APIKey.Value = userInfo.api_key;
+                Plugin.Instance.SetAPIKey(userInfo.api_key);
             if (userInfo.id == 0)
             {
                 userInfo.allowSubmit = false;
             }
             else
             {
-                Plugin.Instance.StartCoroutine(TootTallyAPIService.SendModInfo(Plugin.Instance.APIKey.Value, Chainloader.PluginInfos, allowSubmit =>
+                Plugin.Instance.StartCoroutine(TootTallyAPIService.SendModInfo(Plugin.Instance.PersistentAPIKey, Chainloader.PluginInfos, allowSubmit =>
                 {
                     userInfo.allowSubmit = allowSubmit;
                 }));

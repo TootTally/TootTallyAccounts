@@ -3,6 +3,7 @@ using TootTallyCore.APIServices;
 using TootTallyCore.Graphics;
 using TootTallyCore.Graphics.Animations;
 using TootTallyCore.Utils.Assets;
+using TootTallyCore.Utils.Helpers;
 using TootTallyCore.Utils.TootTallyNotifs;
 using UnityEngine;
 
@@ -204,7 +205,6 @@ namespace TootTallyAccounts
                                 {
                                     TootTallyNotifManager.DisplayNotif($"Login with {user.username} successful!");
                                     TootTallyUser.OnUserLogin(user);
-                                    Plugin.Instance.APIKey.Value = user.api_key;
                                     Hide();
                                 }
                                 else
