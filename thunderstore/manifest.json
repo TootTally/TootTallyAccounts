@@ -1,12 +1,12 @@
 {
     "name": "TootTallyAccounts",
-    "version_number": "1.0.3",
+    "version_number": "1.0.4",
     "website_url": "https://github.com/TootTally/TootTallyCore",
     "description": "TootTally Account management module",
     "dependencies": [
-        "TootTally-TootTallySettings-1.1.5",
-        "TromboneChamps-TrombLoader-2.3.0",
-        "TromboneChamps-BaboonAPI-2.7.3",
+        "TootTally-TootTallySettings-1.1.6",
+        "TromboneChamps-TrombLoader-2.4.3",
+        "TromboneChamps-BaboonAPI-2.10.0",
         "BepInEx-BepInExPack_TromboneChamp-5.4.21"
     ]
 }
